@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../models/subscription.dart';
-import '../models/billing_cycle.dart';
 import '../models/subscription_status.dart';
 import '../models/category.dart';
 import '../providers/subscription_provider.dart';
@@ -23,7 +22,6 @@ class SubscriptionsScreen extends ConsumerStatefulWidget {
 class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
   String _searchQuery = '';
   String? _statusFilter;
-  String? _cycleFilter;
   String? _categoryFilter;
 
   @override
@@ -41,9 +39,6 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
         }
       }
       if (_statusFilter != null && sub.status != _statusFilter) return false;
-      if (_cycleFilter != null && sub.billingCycle != _cycleFilter) {
-        return false;
-      }
       if (_categoryFilter != null && sub.category != _categoryFilter) {
         return false;
       }
@@ -56,7 +51,29 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.yellow,
         foregroundColor: AppColors.black,
-        title: const Text('SUBSCRIPTIONS'),
+        elevation: 0,
+        title: const Text(
+          'SUBSCRIPTIONS',
+          style: TextStyle(
+            color: AppColors.black,
+            fontWeight: FontWeight.w900,
+            fontSize: 20,
+            letterSpacing: 0.5,
+          ),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(3),
+          child: SizedBox(height: 3, child: ColoredBox(color: AppColors.black)),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_none,
+              color: AppColors.black,
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -68,7 +85,7 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
                   color: theme.brightness == Brightness.dark
                       ? AppColors.white
                       : AppColors.black,
-                  width: 2,
+                  width: 3,
                 ),
               ),
             ),
@@ -77,7 +94,10 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
                 TextField(
                   onChanged: (value) => setState(() => _searchQuery = value),
                   decoration: InputDecoration(
-                    hintText: 'SEARCH SUBSCRIPTIONS...',
+                    hintText: 'Search subscriptions...',
+                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                      color: AppColors.grey,
+                    ),
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
@@ -92,15 +112,12 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _FilterChip(
+                      _StatusFilterChip(
                         label: 'ALL',
-                        selected:
-                            _statusFilter == null &&
-                            _cycleFilter == null &&
-                            _categoryFilter == null,
+                        selected: _statusFilter == null && _categoryFilter == null,
+                        selectedColor: AppColors.purple,
                         onSelected: (_) => setState(() {
                           _statusFilter = null;
-                          _cycleFilter = null;
                           _categoryFilter = null;
                         }),
                       ),
@@ -108,23 +125,11 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
                       ...SubscriptionStatus.values.map(
                         (status) => Padding(
                           padding: const EdgeInsets.only(right: 8),
-                          child: _FilterChip(
+                          child: _StatusFilterChip(
                             label: status.label.toUpperCase(),
                             selected: _statusFilter == status.name,
                             onSelected: (selected) => setState(() {
                               _statusFilter = selected ? status.name : null;
-                            }),
-                          ),
-                        ),
-                      ),
-                      ...BillingCycle.values.map(
-                        (cycle) => Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: _FilterChip(
-                            label: cycle.label.toUpperCase(),
-                            selected: _cycleFilter == cycle.name,
-                            onSelected: (selected) => setState(() {
-                              _cycleFilter = selected ? cycle.name : null;
                             }),
                           ),
                         ),
@@ -140,8 +145,9 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
                         .map(
                           (cat) => Padding(
                             padding: const EdgeInsets.only(right: 8),
-                            child: _FilterChip(
+                            child: _CategoryFilterChip(
                               label: cat.label.toUpperCase(),
+                              categoryColor: AppColors.categoryColor(cat),
                               selected: _categoryFilter == cat.name,
                               onSelected: (selected) => setState(() {
                                 _categoryFilter = selected ? cat.name : null;
@@ -187,6 +193,11 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push('/subscription/new'),
+        backgroundColor: AppColors.green,
+        foregroundColor: AppColors.white,
+        shape: const CircleBorder(
+          side: BorderSide(color: AppColors.black, width: 3),
+        ),
         child: const Icon(Icons.add, size: 28),
       ),
     );
@@ -203,7 +214,6 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
 
     return BrutalistCard(
       onTap: () => context.push('/subscription/${sub.id}'),
-      shadowOffset: const Offset(3, 3),
       child: Row(
         children: [
           Container(
@@ -211,7 +221,7 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
             height: 48,
             decoration: BoxDecoration(
               color: catColor,
-              border: Border.all(color: AppColors.black, width: 2),
+              border: Border.all(color: AppColors.black, width: 3),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Center(
@@ -248,12 +258,8 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: statusColor == AppColors.green
-                            ? AppColors.green
-                            : statusColor == AppColors.yellow
-                            ? AppColors.yellow
-                            : AppColors.pink,
-                        border: Border.all(color: AppColors.black, width: 2),
+                        color: statusColor,
+                        border: Border.all(color: AppColors.black, width: 3),
                         borderRadius: BorderRadius.circular(9999),
                       ),
                       child: Text(
@@ -271,7 +277,7 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${sub.categoryEnum.label} — ${sub.billingCycleEnum.label}',
+                  '${sub.categoryEnum.label} • ${sub.billingCycleEnum.label}',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontSize: 12,
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
@@ -290,19 +296,80 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
             formatCurrency(sub.price, sub.currency),
             style: theme.textTheme.titleLarge?.copyWith(fontSize: 15),
           ),
+          const SizedBox(width: 4),
+          const Icon(
+            Icons.chevron_right,
+            color: AppColors.black,
+            size: 20,
+          ),
         ],
       ),
     );
   }
 }
 
-class _FilterChip extends StatelessWidget {
+class _StatusFilterChip extends StatelessWidget {
   final String label;
+  final bool selected;
+  final Color? selectedColor;
+  final ValueChanged<bool> onSelected;
+
+  const _StatusFilterChip({
+    required this.label,
+    required this.selected,
+    required this.onSelected,
+    this.selectedColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final borderColor = isDark ? AppColors.white : AppColors.black;
+
+    return GestureDetector(
+      onTap: () => onSelected(!selected),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected
+              ? (selectedColor ?? (isDark ? AppColors.white : AppColors.black))
+              : (isDark ? AppColors.darkGrey : AppColors.white),
+          border: Border.all(color: borderColor, width: 3),
+          borderRadius: BorderRadius.circular(4),
+          boxShadow: [
+            BoxShadow(
+              offset: const Offset(2, 2),
+              color: isDark ? AppColors.white.withValues(alpha: 0.2) : AppColors.black,
+            ),
+          ],
+        ),
+        child: Text(
+          label,
+          style: theme.textTheme.labelSmall?.copyWith(
+            fontSize: 12,
+            fontWeight: selected ? FontWeight.w900 : FontWeight.w700,
+            color: selected
+                ? (selectedColor != null
+                    ? AppColors.white
+                    : (isDark ? AppColors.black : AppColors.white))
+                : (isDark ? AppColors.white : AppColors.black),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CategoryFilterChip extends StatelessWidget {
+  final String label;
+  final Color categoryColor;
   final bool selected;
   final ValueChanged<bool> onSelected;
 
-  const _FilterChip({
+  const _CategoryFilterChip({
     required this.label,
+    required this.categoryColor,
     required this.selected,
     required this.onSelected,
   });
@@ -318,13 +385,14 @@ class _FilterChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: selected
-              ? (isDark ? AppColors.white : AppColors.black)
-              : (isDark ? AppColors.darkGrey : AppColors.white),
-          border: Border.all(color: borderColor, width: 2),
+          color: selected ? categoryColor : (isDark ? AppColors.darkGrey : AppColors.white),
+          border: Border.all(color: borderColor, width: 3),
           borderRadius: BorderRadius.circular(4),
-          boxShadow: const [
-            BoxShadow(offset: Offset(2, 2), color: AppColors.black),
+          boxShadow: [
+            BoxShadow(
+              offset: const Offset(2, 2),
+              color: isDark ? AppColors.white.withValues(alpha: 0.2) : AppColors.black,
+            ),
           ],
         ),
         child: Text(
@@ -333,7 +401,7 @@ class _FilterChip extends StatelessWidget {
             fontSize: 12,
             fontWeight: selected ? FontWeight.w900 : FontWeight.w700,
             color: selected
-                ? (isDark ? AppColors.black : AppColors.white)
+                ? AppColors.white
                 : (isDark ? AppColors.white : AppColors.black),
           ),
         ),

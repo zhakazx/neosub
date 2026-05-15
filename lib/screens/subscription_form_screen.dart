@@ -181,7 +181,34 @@ class _SubscriptionFormScreenState
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.purple,
-        title: Text(isEditing ? 'EDIT SUBSCRIPTION' : 'NEW SUBSCRIPTION'),
+        foregroundColor: AppColors.black,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.black),
+          onPressed: () => context.pop(),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(3),
+          child: SizedBox(height: 3, child: ColoredBox(color: AppColors.black)),
+        ),
+        title: Text(
+          isEditing ? 'EDIT SUBSCRIPTION' : 'NEW SUBSCRIPTION',
+          style: const TextStyle(
+            color: AppColors.black,
+            fontWeight: FontWeight.w900,
+            fontSize: 20,
+            letterSpacing: 0.5,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.content_cut,
+              color: AppColors.black,
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -191,7 +218,7 @@ class _SubscriptionFormScreenState
             _buildInputField(
               controller: _nameController,
               label: 'SERVICE NAME *',
-              hint: 'e.g. Netflix, ChatGPT Plus',
+              hint: 'e.g. Spotify, Netflix',
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Service name is required';
@@ -207,7 +234,7 @@ class _SubscriptionFormScreenState
                   child: _buildInputField(
                     controller: _priceController,
                     label: 'PRICE *',
-                    hint: 'e.g. 54000',
+                    hint: 'Rp0',
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
@@ -288,7 +315,7 @@ class _SubscriptionFormScreenState
             _buildInputField(
               controller: _notesController,
               label: 'NOTES',
-              hint: 'Optional description...',
+              hint: 'Add notes (optional)...',
               maxLines: 3,
             ),
             const SizedBox(height: 32),

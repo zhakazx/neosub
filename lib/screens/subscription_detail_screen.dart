@@ -44,6 +44,11 @@ class SubscriptionDetailScreen extends ConsumerWidget {
         appBar: AppBar(
           backgroundColor: AppColors.yellow,
           foregroundColor: AppColors.black,
+          elevation: 0,
+          bottom: const PreferredSize(
+            preferredSize: Size.fromHeight(3),
+            child: SizedBox(height: 3, child: ColoredBox(color: AppColors.black)),
+          ),
           title: const Text('NOT FOUND'),
         ),
         body: const Center(child: Text('Subscription not found')),
@@ -59,11 +64,30 @@ class SubscriptionDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: AppColors.yellow,
         foregroundColor: AppColors.black,
-        title: Text(sub.name.toUpperCase()),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.black),
+          onPressed: () => context.pop(),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(3),
+          child: SizedBox(height: 3, child: ColoredBox(color: AppColors.black)),
+        ),
+        title: Text(
+          sub.name.toUpperCase(),
+          style: const TextStyle(
+            color: AppColors.black,
+            fontWeight: FontWeight.w900,
+            fontSize: 20,
+            letterSpacing: 0.5,
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit),
-            color: AppColors.black,
+            icon: const Icon(
+              Icons.edit,
+              color: AppColors.black,
+            ),
             onPressed: () => context.push('/subscription/edit/${sub.id}'),
           ),
         ],
@@ -71,123 +95,116 @@ class SubscriptionDetailScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          SizedBox(
-            height: 140,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: BrutalistCard(
-                    backgroundColor: catColor,
-                    borderColor: catColor,
-                    shadowOffset: const Offset(6, 6),
-                    shadowColor: AppColors.black.withValues(alpha: 0.3),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 72,
-                          height: 72,
-                          decoration: BoxDecoration(
+          Stack(
+            children: [
+              BrutalistCard(
+                child: Row(
+                  children: [
+                    Container(
+                      width: 64,
+                      height: 64,
+                      decoration: BoxDecoration(
+                        color: catColor,
+                        border: Border.all(color: AppColors.black, width: 3),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Center(
+                        child: Text(
+                          sub.name.substring(0, 1).toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w900,
                             color: AppColors.white,
-                            border: Border.all(
-                              color: AppColors.black,
-                              width: 3,
-                            ),
-                            borderRadius: BorderRadius.circular(4),
                           ),
-                          child: Center(
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            sub.name.toUpperCase(),
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: statusColor,
+                              border: Border.all(
+                                color: AppColors.black,
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(9999),
+                            ),
                             child: Text(
-                              sub.name.substring(0, 1).toUpperCase(),
+                              sub.statusEnum.label.toUpperCase(),
                               style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.w900,
-                                color: catColor,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                color: statusColor == AppColors.yellow
+                                    ? AppColors.black
+                                    : AppColors.white,
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          sub.name.toUpperCase(),
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: AppColors.white,
-                            fontWeight: FontWeight.w800,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                ..._buildStars(theme),
-                Positioned(
-                  right: 12,
-                  top: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: statusColor,
-                      border: Border.all(color: AppColors.black, width: 2),
-                      borderRadius: BorderRadius.circular(9999),
-                    ),
-                    child: Text(
-                      sub.statusEnum.label.toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        color: statusColor == AppColors.yellow
-                            ? AppColors.black
-                            : AppColors.white,
+                        ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              ..._buildStars(theme),
+            ],
           ),
           const SizedBox(height: 24),
           Text('DETAILS', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 16),
           BrutalistCard(
-            shadowOffset: const Offset(3, 3),
             child: Column(
               children: [
                 _DetailRow(
-                  label: 'PRICE',
+                  label: 'Price',
                   value: formatCurrency(sub.price, sub.currency),
                 ),
-                const Divider(height: 1),
+                const Divider(height: 3, thickness: 3),
                 _DetailRow(
-                  label: 'BILLING CYCLE',
-                  value: sub.billingCycleEnum.label.toUpperCase(),
+                  label: 'Billing Cycle',
+                  value: sub.billingCycleEnum.label,
                 ),
-                const Divider(height: 1),
+                const Divider(height: 3, thickness: 3),
                 _DetailRow(
-                  label: 'CATEGORY',
-                  value: sub.categoryEnum.label.toUpperCase(),
+                  label: 'Category',
+                  value: sub.categoryEnum.label,
                 ),
-                const Divider(height: 1),
+                const Divider(height: 3, thickness: 3),
                 _DetailRow(
-                  label: 'START DATE',
+                  label: 'Start Date',
                   value: DateFormat('MMM d, yyyy').format(sub.startDate),
                 ),
-                const Divider(height: 1),
+                const Divider(height: 3, thickness: 3),
                 _DetailRow(
-                  label: 'NEXT BILLING',
+                  label: 'Next Billing',
                   value: DateFormat('MMM d, yyyy').format(sub.nextBillingDate),
                 ),
-                const Divider(height: 1),
+                const Divider(height: 3, thickness: 3),
                 _DetailRow(
-                  label: 'DAYS REMAINING',
+                  label: 'Days Remaining',
                   value: daysRemaining >= 0 ? '$daysRemaining days' : 'OVERDUE',
-                  valueColor: daysRemaining < 0 ? AppColors.pink : null,
+                  valueColor: daysRemaining < 0
+                      ? AppColors.pink
+                      : AppColors.purple,
                 ),
                 if (sub.notes != null && sub.notes!.isNotEmpty) ...[
-                  const Divider(height: 1),
-                  _DetailRow(label: 'NOTES', value: sub.notes!),
+                  const Divider(height: 3, thickness: 3),
+                  _DetailRow(label: 'Notes', value: sub.notes!),
                 ],
               ],
             ),
@@ -223,6 +240,8 @@ class SubscriptionDetailScreen extends ConsumerWidget {
             BrutalistButton(
               label: 'CANCEL',
               variant: BrutalistButtonVariant.secondary,
+              backgroundColor: AppColors.orange,
+              foregroundColor: AppColors.black,
               onPressed: () {
                 ref
                     .read(subscriptionsProvider.notifier)

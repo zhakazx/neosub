@@ -48,7 +48,30 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.pink,
-        title: const Text('CALENDAR'),
+        foregroundColor: AppColors.black,
+        elevation: 0,
+        title: const Text(
+          'CALENDAR',
+          style: TextStyle(
+            color: AppColors.black,
+            fontWeight: FontWeight.w900,
+            fontSize: 20,
+            letterSpacing: 0.5,
+          ),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(3),
+          child: SizedBox(height: 3, child: ColoredBox(color: AppColors.black)),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_none,
+              color: AppColors.black,
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -56,7 +79,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             margin: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: theme.cardTheme.color,
-              border: Border.all(color: borderColor, width: 2),
+              border: Border.all(color: borderColor, width: 3),
               borderRadius: BorderRadius.circular(4),
               boxShadow: [
                 BoxShadow(offset: const Offset(3, 3), color: borderColor),
@@ -87,7 +110,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 headerPadding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: borderColor, width: 2),
+                    bottom: BorderSide(color: borderColor, width: 3),
                   ),
                 ),
               ),
@@ -128,7 +151,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 ),
                 todayDecoration: BoxDecoration(
                   color: AppColors.yellow,
-                  border: Border.all(color: borderColor, width: 2),
+                  border: Border.all(color: borderColor, width: 3),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 todayTextStyle: const TextStyle(
@@ -136,8 +159,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   fontWeight: FontWeight.w900,
                 ),
                 selectedDecoration: BoxDecoration(
-                  color: AppColors.purple,
-                  border: Border.all(color: borderColor, width: 2),
+                  color: AppColors.pink,
+                  border: Border.all(color: borderColor, width: 3),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 selectedTextStyle: const TextStyle(
@@ -167,7 +190,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           margin: const EdgeInsets.symmetric(horizontal: 1),
                           decoration: BoxDecoration(
                             color: AppColors.pink,
-                            border: Border.all(color: borderColor),
+                            border: Border.all(color: borderColor, width: 2),
                           ),
                         );
                       }).toList(),
@@ -180,7 +203,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               },
             ),
           ),
-          const Divider(height: 2, thickness: 2),
+          const Divider(height: 3, thickness: 3),
           Expanded(
             child: selectedSubs.isEmpty
                 ? Center(
@@ -207,7 +230,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         padding: const EdgeInsets.only(bottom: 12),
                         child: BrutalistCard(
                           onTap: () => context.push('/subscription/${sub.id}'),
-                          shadowOffset: const Offset(3, 3),
                           child: Row(
                             children: [
                               Container(
@@ -217,7 +239,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                   color: catColor,
                                   border: Border.all(
                                     color: borderColor,
-                                    width: 2,
+                                    width: 3,
                                   ),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
@@ -242,7 +264,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                           ?.copyWith(fontSize: 14),
                                     ),
                                     Text(
-                                      '${sub.categoryEnum.label} — ${sub.billingCycleEnum.label}',
+                                      '${sub.categoryEnum.label} • ${sub.billingCycleEnum.label}',
                                       style: theme.textTheme.bodyMedium
                                           ?.copyWith(fontSize: 12),
                                     ),
@@ -255,6 +277,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                   fontSize: 14,
                                 ),
                               ),
+                              const SizedBox(width: 4),
+                              const Icon(
+                                Icons.chevron_right,
+                                color: AppColors.black,
+                                size: 20,
+                              ),
                             ],
                           ),
                         ),
@@ -263,6 +291,15 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.push('/subscription/new'),
+        backgroundColor: AppColors.yellow,
+        foregroundColor: AppColors.black,
+        shape: const CircleBorder(
+          side: BorderSide(color: AppColors.black, width: 3),
+        ),
+        child: const Icon(Icons.add, size: 28),
       ),
     );
   }

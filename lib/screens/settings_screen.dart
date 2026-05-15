@@ -19,9 +19,31 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.green,
+        backgroundColor: AppColors.teal,
         foregroundColor: AppColors.black,
-        title: const Text('SETTINGS'),
+        elevation: 0,
+        title: const Text(
+          'SETTINGS',
+          style: TextStyle(
+            color: AppColors.black,
+            fontWeight: FontWeight.w900,
+            fontSize: 20,
+            letterSpacing: 0.5,
+          ),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(3),
+          child: SizedBox(height: 3, child: ColoredBox(color: AppColors.black)),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_none,
+              color: AppColors.black,
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -29,11 +51,10 @@ class SettingsScreen extends ConsumerWidget {
           Text('PREFERENCES', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 16),
           BrutalistCard(
-            shadowOffset: const Offset(3, 3),
             child: Column(
               children: [
                 _SettingsTile(
-                  label: 'DARK MODE',
+                  label: 'Dark Mode',
                   trailing: _NeoToggle(
                     value: settings.darkMode,
                     onChanged: (value) {
@@ -42,9 +63,9 @@ class SettingsScreen extends ConsumerWidget {
                     isDark: isDark,
                   ),
                 ),
-                const Divider(height: 1),
+                const Divider(height: 3, thickness: 3),
                 _SettingsTile(
-                  label: 'PRIMARY CURRENCY',
+                  label: 'Primary Currency',
                   trailing: DropdownButton<String>(
                     value: settings.primaryCurrency,
                     underline: const SizedBox.shrink(),
@@ -72,11 +93,10 @@ class SettingsScreen extends ConsumerWidget {
           Text('NOTIFICATIONS', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 16),
           BrutalistCard(
-            shadowOffset: const Offset(3, 3),
             child: Column(
               children: [
                 _SettingsTile(
-                  label: 'ENABLE REMINDERS',
+                  label: 'Enable Reminders',
                   trailing: _NeoToggle(
                     value: settings.isEnabled,
                     onChanged: (value) {
@@ -88,9 +108,9 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
                 if (settings.isEnabled) ...[
-                  const Divider(height: 1),
+                  const Divider(height: 3, thickness: 3),
                   _SettingsTile(
-                    label: 'NOTIFICATION TIME',
+                    label: 'Notification Time',
                     trailing: TextButton(
                       onPressed: () => _pickTime(context, ref, settings),
                       child: Text(
@@ -99,7 +119,7 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const Divider(height: 1),
+                  const Divider(height: 3, thickness: 3),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Column(
@@ -111,40 +131,25 @@ class SettingsScreen extends ConsumerWidget {
                             color: theme.colorScheme.onSurface,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 12),
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
-                          children: [1, 3, 5, 7, 14].map((days) {
+                           children: [1, 3, 5, 7].map((days) {
                             final isSelected = settings.daysBefore.contains(
                               days,
                             );
-                            return FilterChip(
-                              label: Text(
-                                'D-$days',
-                                style: TextStyle(
-                                  fontWeight: isSelected
-                                      ? FontWeight.w900
-                                      : FontWeight.w700,
-                                  color: isSelected
-                                      ? theme
-                                                .chipTheme
-                                                .secondaryLabelStyle
-                                                ?.color ??
-                                            theme.colorScheme.onPrimary
-                                      : theme.chipTheme.labelStyle?.color ??
-                                            theme.colorScheme.onSurface,
-                                ),
-                              ),
+                            return _ReminderChip(
+                              label: 'D-$days',
                               selected: isSelected,
-                              onSelected: (selected) {
+                              onTap: () {
                                 final newDays = List<int>.from(
                                   settings.daysBefore,
                                 );
-                                if (selected) {
-                                  newDays.add(days);
-                                } else {
+                                if (isSelected) {
                                   newDays.remove(days);
+                                } else {
+                                  newDays.add(days);
                                 }
                                 newDays.sort();
                                 ref
@@ -165,17 +170,16 @@ class SettingsScreen extends ConsumerWidget {
           Text('ABOUT', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 16),
           BrutalistCard(
-            shadowOffset: const Offset(3, 3),
             child: Column(
               children: [
                 _SettingsTile(
-                  label: 'APP VERSION',
+                  label: 'App Version',
                   trailing: Text('1.0.0', style: theme.textTheme.bodyLarge),
                 ),
-                const Divider(height: 1),
+                const Divider(height: 3, thickness: 3),
                 _SettingsTile(
-                  label: 'DEVELOPED BY',
-                  trailing: Text('@zhakazx', style: theme.textTheme.bodyLarge),
+                  label: 'Developer',
+                  trailing: Text('@ZHAKAZX', style: theme.textTheme.bodyLarge),
                 ),
               ],
             ),
@@ -207,7 +211,7 @@ class SettingsScreen extends ConsumerWidget {
         return Theme(
           data: Theme.of(context).copyWith(
             timePickerTheme: const TimePickerThemeData(
-              dayPeriodBorderSide: BorderSide(color: AppColors.black, width: 2),
+              dayPeriodBorderSide: BorderSide(color: AppColors.black, width: 3),
             ),
           ),
           child: child!,
@@ -298,7 +302,7 @@ class _NeoToggle extends StatelessWidget {
         height: 26,
         decoration: BoxDecoration(
           color: value ? AppColors.purple : const Color(0xFFDDDDDD),
-          border: Border.all(color: borderColor, width: 2),
+          border: Border.all(color: borderColor, width: 3),
           borderRadius: BorderRadius.circular(9999),
         ),
         alignment: value ? Alignment.centerRight : Alignment.centerLeft,
@@ -308,9 +312,70 @@ class _NeoToggle extends StatelessWidget {
           height: 18,
           decoration: BoxDecoration(
             color: AppColors.white,
-            border: Border.all(color: borderColor, width: 2),
+            border: Border.all(color: borderColor, width: 3),
             borderRadius: BorderRadius.circular(9999),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ReminderChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ReminderChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final borderColor = isDark ? AppColors.white : AppColors.black;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected
+              ? AppColors.green
+              : (isDark ? AppColors.darkGrey : AppColors.white),
+          border: Border.all(color: borderColor, width: 3),
+          borderRadius: BorderRadius.circular(4),
+          boxShadow: [
+            BoxShadow(
+              offset: const Offset(2, 2),
+              color: isDark ? AppColors.white.withValues(alpha: 0.2) : AppColors.black,
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (selected)
+              const Icon(
+                Icons.check,
+                size: 14,
+                color: AppColors.black,
+              ),
+            if (selected) const SizedBox(width: 4),
+            Text(
+              label,
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontSize: 12,
+                fontWeight: selected ? FontWeight.w900 : FontWeight.w700,
+                color: selected
+                    ? AppColors.black
+                    : (isDark ? AppColors.white : AppColors.black),
+              ),
+            ),
+          ],
         ),
       ),
     );

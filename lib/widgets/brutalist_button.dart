@@ -9,6 +9,8 @@ class BrutalistButton extends StatefulWidget {
   final BrutalistButtonVariant variant;
   final IconData? icon;
   final double? width;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
 
   const BrutalistButton({
     super.key,
@@ -17,6 +19,8 @@ class BrutalistButton extends StatefulWidget {
     this.variant = BrutalistButtonVariant.primary,
     this.icon,
     this.width,
+    this.backgroundColor,
+    this.foregroundColor,
   });
 
   @override
@@ -62,7 +66,7 @@ class _BrutalistButtonState extends State<BrutalistButton> {
         fgColor = isDark ? AppColors.white : AppColors.black;
       case BrutalistButtonVariant.danger:
         bgColor = AppColors.pink;
-        fgColor = AppColors.white;
+        fgColor = AppColors.black;
       case BrutalistButtonVariant.warning:
         bgColor = AppColors.yellow;
         fgColor = AppColors.black;
@@ -70,6 +74,9 @@ class _BrutalistButtonState extends State<BrutalistButton> {
         bgColor = AppColors.teal;
         fgColor = AppColors.black;
     }
+
+    if (widget.backgroundColor != null) bgColor = widget.backgroundColor!;
+    if (widget.foregroundColor != null) fgColor = widget.foregroundColor!;
 
     return GestureDetector(
       onTapDown: _onTapDown,
@@ -80,14 +87,12 @@ class _BrutalistButtonState extends State<BrutalistButton> {
         curve: Curves.linear,
         width: widget.width,
         transform: _pressed
-            ? (Matrix4.identity()..translate(4.0, 4.0))
+            ? (Matrix4.identity()..setTranslationRaw(4.0, 4.0, 0.0))
             : Matrix4.identity(),
         decoration: BoxDecoration(
           color: bgColor,
           border: Border.all(
-            color: widget.variant == BrutalistButtonVariant.secondary
-                ? borderColor
-                : borderColor,
+            color: borderColor,
             width: 3,
           ),
           borderRadius: BorderRadius.circular(4),

@@ -165,7 +165,7 @@ class BrutalistTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
-          side: const BorderSide(color: AppColors.black, width: 2),
+          side: const BorderSide(color: AppColors.black, width: 3),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -178,19 +178,19 @@ class BrutalistTheme {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: AppColors.black, width: 2),
+          borderSide: const BorderSide(color: AppColors.black, width: 3),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: AppColors.black, width: 2),
+          borderSide: const BorderSide(color: AppColors.black, width: 3),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: AppColors.black, width: 3),
+          borderSide: const BorderSide(color: AppColors.black, width: 4),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: AppColors.pink, width: 2),
+          borderSide: const BorderSide(color: AppColors.pink, width: 3),
         ),
         labelStyle: GoogleFonts.dmSans(
           fontSize: 11,
@@ -215,7 +215,7 @@ class BrutalistTheme {
             side: const BorderSide(color: AppColors.black, width: 3),
           ),
           textStyle: GoogleFonts.spaceGrotesk(
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.0,
           ),
@@ -228,7 +228,7 @@ class BrutalistTheme {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           textStyle: GoogleFonts.spaceGrotesk(
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.0,
           ),
@@ -284,13 +284,13 @@ class BrutalistTheme {
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
-          side: const BorderSide(color: AppColors.black, width: 2),
+          side: const BorderSide(color: AppColors.black, width: 3),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
       dividerTheme: const DividerThemeData(
         color: AppColors.black,
-        thickness: 2,
+        thickness: 3,
         space: 0,
       ),
       dialogTheme: DialogThemeData(
@@ -341,7 +341,7 @@ class BrutalistTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
-          side: const BorderSide(color: AppColors.white, width: 2),
+          side: const BorderSide(color: AppColors.white, width: 3),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -354,19 +354,19 @@ class BrutalistTheme {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: AppColors.white, width: 2),
+          borderSide: const BorderSide(color: AppColors.white, width: 3),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: AppColors.white, width: 2),
+          borderSide: const BorderSide(color: AppColors.white, width: 3),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: AppColors.white, width: 3),
+          borderSide: const BorderSide(color: AppColors.white, width: 4),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: AppColors.pink, width: 2),
+          borderSide: const BorderSide(color: AppColors.pink, width: 3),
         ),
         labelStyle: GoogleFonts.dmSans(
           fontSize: 11,
@@ -460,13 +460,13 @@ class BrutalistTheme {
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
-          side: const BorderSide(color: AppColors.white, width: 2),
+          side: const BorderSide(color: AppColors.white, width: 3),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
       dividerTheme: const DividerThemeData(
         color: AppColors.white,
-        thickness: 2,
+        thickness: 3,
         space: 0,
       ),
       dialogTheme: DialogThemeData(

@@ -11,18 +11,20 @@ class BrutalistCard extends StatelessWidget {
   final VoidCallback? onTap;
   final Offset? shadowOffset;
   final Color? shadowColor;
+  final double borderRadius;
 
   const BrutalistCard({
     super.key,
     required this.child,
     this.backgroundColor,
     this.borderColor,
-    this.borderWidth = 2,
+    this.borderWidth = 3,
     this.padding = const EdgeInsets.all(14),
     this.margin = const EdgeInsets.all(0),
     this.onTap,
     this.shadowOffset,
     this.shadowColor,
+    this.borderRadius = 4,
   });
 
   @override
@@ -42,7 +44,7 @@ class BrutalistCard extends StatelessWidget {
           color: borderColor ?? (isDark ? AppColors.white : AppColors.black),
           width: borderWidth,
         ),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: [
           BoxShadow(offset: offset, color: shadowColor ?? defaultShadow),
         ],

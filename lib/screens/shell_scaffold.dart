@@ -11,29 +11,28 @@ class ShellScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: AppColors.greyBorder, width: 2),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: AppColors.black,
+        currentIndex: navigationShell.currentIndex,
+        onTap: (index) => navigationShell.goBranch(index),
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+        selectedItemColor: AppColors.yellow,
+        unselectedItemColor: AppColors.grey,
+        selectedFontSize: 11,
+        unselectedFontSize: 11,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.list_alt), label: 'Subs'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: 'Cal',
           ),
-        ),
-        child: BottomNavigationBar(
-          backgroundColor: AppColors.black,
-          currentIndex: navigationShell.currentIndex,
-          onTap: (index) => navigationShell.goBranch(index),
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.list_alt), label: 'Subs'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today),
-              label: 'Cal',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
-            ),
-          ],
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
       ),
     );
   }
