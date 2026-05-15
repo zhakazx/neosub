@@ -20,7 +20,9 @@ class NotificationService {
 
     tz.initializeTimeZones();
 
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -38,11 +40,13 @@ class NotificationService {
   Future<bool> requestPermissions() async {
     final androidPermission = await _notifications
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.requestNotificationsPermission();
     final iosPermission = await _notifications
         .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
+          IOSFlutterLocalNotificationsPlugin
+        >()
         ?.requestPermissions(alert: true, badge: true, sound: true);
     return androidPermission == true || iosPermission == true;
   }
@@ -113,7 +117,8 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'subscription_reminders',
           'Subscription Reminders',
-          channelDescription: 'Notifications for upcoming subscription renewals',
+          channelDescription:
+              'Notifications for upcoming subscription renewals',
           importance: Importance.high,
           priority: Priority.high,
         ),

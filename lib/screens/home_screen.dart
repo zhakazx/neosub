@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../models/subscription.dart';
 import '../providers/subscription_provider.dart';
 import '../providers/settings_provider.dart';
+import '../utils/brutalist_theme.dart';
 import '../utils/currency.dart';
 import '../widgets/brutalist_card.dart';
 
@@ -23,18 +24,17 @@ class HomeScreen extends ConsumerWidget {
     final thisYear = now.year;
 
     final monthlyTotal = activeSubs
-        .where((s) =>
-            s.nextBillingDate.month == thisMonth &&
-            s.nextBillingDate.year == thisYear)
+        .where(
+          (s) =>
+              s.nextBillingDate.month == thisMonth &&
+              s.nextBillingDate.year == thisYear,
+        )
         .fold(0.0, (sum, s) => sum + s.price);
 
-    final weeklyRenewals = activeSubs
-        .where((s) {
-          final diff = s.nextBillingDate.difference(now).inDays;
-          return diff >= 0 && diff <= 7;
-        })
-        .toList()
-      ..sort((a, b) => a.nextBillingDate.compareTo(b.nextBillingDate));
+    final weeklyRenewals = activeSubs.where((s) {
+      final diff = s.nextBillingDate.difference(now).inDays;
+      return diff >= 0 && diff <= 7;
+    }).toList()..sort((a, b) => a.nextBillingDate.compareTo(b.nextBillingDate));
 
     final sortedActive = List<Subscription>.from(activeSubs)
       ..sort((a, b) => a.nextBillingDate.compareTo(b.nextBillingDate));
@@ -46,6 +46,7 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.purple,
         title: const Text('SUBTRACK'),
       ),
       body: RefreshIndicator(
@@ -57,10 +58,7 @@ class HomeScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Text(
-              'DASHBOARD',
-              style: theme.textTheme.headlineLarge,
-            ),
+            Text('DASHBOARD', style: theme.textTheme.headlineLarge),
             const SizedBox(height: 4),
             Text(
               DateFormat('MMMM yyyy').format(now).toUpperCase(),
@@ -70,22 +68,23 @@ class HomeScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 24),
             BrutalistCard(
-              backgroundColor: theme.colorScheme.primary,
-              borderColor: theme.colorScheme.primary,
+              backgroundColor: AppColors.green,
+              borderColor: AppColors.green,
+              shadowColor: AppColors.greenDark,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'TOTAL THIS MONTH',
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.onPrimary.withValues(alpha: 0.7),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: AppColors.white,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     formatCurrency(monthlyTotal, settings.primaryCurrency),
                     style: theme.textTheme.displayLarge?.copyWith(
-                      color: theme.colorScheme.onPrimary,
+                      color: AppColors.white,
                       fontSize: 40,
                     ),
                   ),
@@ -98,14 +97,14 @@ class HomeScreen extends ConsumerWidget {
                           children: [
                             Text(
                               'ACTIVE',
-                              style: theme.textTheme.labelLarge?.copyWith(
-                                color: theme.colorScheme.onPrimary.withValues(alpha: 0.7),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: AppColors.white.withValues(alpha: 0.8),
                               ),
                             ),
                             Text(
                               '${activeSubs.length}',
                               style: theme.textTheme.headlineLarge?.copyWith(
-                                color: theme.colorScheme.onPrimary,
+                                color: AppColors.white,
                               ),
                             ),
                           ],
@@ -114,7 +113,7 @@ class HomeScreen extends ConsumerWidget {
                       Container(
                         width: 2,
                         height: 40,
-                        color: theme.colorScheme.onPrimary.withValues(alpha: 0.3),
+                        color: AppColors.white.withValues(alpha: 0.3),
                       ),
                       Expanded(
                         child: Padding(
@@ -124,14 +123,14 @@ class HomeScreen extends ConsumerWidget {
                             children: [
                               Text(
                                 'DUE THIS WEEK',
-                                style: theme.textTheme.labelLarge?.copyWith(
-                                  color: theme.colorScheme.onPrimary.withValues(alpha: 0.7),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: AppColors.white.withValues(alpha: 0.8),
                                 ),
                               ),
                               Text(
                                 '${weeklyRenewals.length}',
                                 style: theme.textTheme.headlineLarge?.copyWith(
-                                  color: theme.colorScheme.onPrimary,
+                                  color: AppColors.white,
                                 ),
                               ),
                             ],
@@ -146,47 +145,62 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             if (nearest != null) ...[
               BrutalistCard(
-                borderColor: Colors.orange,
+                backgroundColor: AppColors.yellow,
+                borderColor: AppColors.yellow,
+                shadowColor: AppColors.yellowDark,
                 child: Row(
                   children: [
+                    const Icon(Icons.bolt, color: AppColors.black, size: 20),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'NEAREST BILL',
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              color: Colors.orange,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: AppColors.black.withValues(alpha: 0.7),
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             nearest.name,
-                            style: theme.textTheme.titleLarge,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: AppColors.black,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '${DateFormat('MMM d').format(nearest.nextBillingDate)} — ${formatCurrency(nearest.price, nearest.currency)}',
-                            style: theme.textTheme.bodyMedium,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: AppColors.black.withValues(alpha: 0.8),
+                            ),
                           ),
                         ],
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
+                        horizontal: 10,
+                        vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.orange,
-                        border: Border.all(color: Colors.orange, width: 2),
+                        color: AppColors.pink,
+                        border: Border.all(color: AppColors.black, width: 2),
+                        borderRadius: BorderRadius.circular(9999),
+                        boxShadow: const [
+                          BoxShadow(
+                            offset: Offset(2, 2),
+                            color: AppColors.black,
+                          ),
+                        ],
                       ),
                       child: Text(
                         '${nearest.nextBillingDate.difference(now).inDays}d',
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w900,
-                          color: Colors.black,
+                          color: AppColors.white,
                         ),
                       ),
                     ),
@@ -210,7 +224,9 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 12),
-              ...weeklyRenewals.map((sub) => _buildSubscriptionItem(context, sub)),
+              ...weeklyRenewals.map(
+                (sub) => _buildSubscriptionItem(context, sub),
+              ),
               const SizedBox(height: 24),
             ],
             Row(
@@ -235,14 +251,18 @@ class HomeScreen extends ConsumerWidget {
                     child: Text(
                       'NO ACTIVE SUBSCRIPTIONS',
                       style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.5,
+                        ),
                       ),
                     ),
                   ),
                 ),
               )
             else
-              ...sortedActive.take(5).map((sub) => _buildSubscriptionItem(context, sub)),
+              ...sortedActive
+                  .take(5)
+                  .map((sub) => _buildSubscriptionItem(context, sub)),
             if (sortedActive.length > 5) ...[
               const SizedBox(height: 12),
               Center(
@@ -261,7 +281,7 @@ class HomeScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push('/subscription/new'),
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, size: 28),
       ),
     );
   }
@@ -269,35 +289,34 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildSubscriptionItem(BuildContext context, Subscription sub) {
     final theme = Theme.of(context);
     final now = DateTime.now();
-    final isToday = sub.nextBillingDate.year == now.year &&
+    final isToday =
+        sub.nextBillingDate.year == now.year &&
         sub.nextBillingDate.month == now.month &&
         sub.nextBillingDate.day == now.day;
+    final catColor = AppColors.categoryColor(sub.categoryEnum);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: BrutalistCard(
         onTap: () => context.push('/subscription/${sub.id}'),
-        borderColor: isToday ? Colors.orange : null,
-        borderWidth: isToday ? 3 : 2,
+        shadowOffset: const Offset(3, 3),
         child: Row(
           children: [
             Container(
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
-                border: Border.all(
-                  color: theme.colorScheme.primary,
-                  width: 2,
-                ),
+                color: catColor,
+                border: Border.all(color: AppColors.black, width: 2),
+                borderRadius: BorderRadius.circular(4),
               ),
               child: Center(
                 child: Text(
                   sub.name.substring(0, 1).toUpperCase(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w900,
-                    color: theme.colorScheme.onPrimary,
+                    color: AppColors.white,
                   ),
                 ),
               ),
@@ -309,9 +328,7 @@ class HomeScreen extends ConsumerWidget {
                 children: [
                   Text(
                     sub.name.toUpperCase(),
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontSize: 15,
-                    ),
+                    style: theme.textTheme.titleLarge?.copyWith(fontSize: 15),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -331,9 +348,7 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 Text(
                   formatCurrency(sub.price, sub.currency),
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontSize: 15,
-                  ),
+                  style: theme.textTheme.titleLarge?.copyWith(fontSize: 15),
                 ),
                 if (isToday)
                   Container(
@@ -343,15 +358,16 @@ class HomeScreen extends ConsumerWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.orange,
-                      border: Border.all(color: Colors.orange),
+                      color: AppColors.orange,
+                      border: Border.all(color: AppColors.black, width: 2),
+                      borderRadius: BorderRadius.circular(9999),
                     ),
                     child: const Text(
                       'TODAY',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w900,
-                        color: Colors.black,
+                        color: AppColors.black,
                       ),
                     ),
                   ),

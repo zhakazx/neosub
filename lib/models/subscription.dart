@@ -60,11 +60,15 @@ class Subscription extends HiveObject {
     required this.updatedAt,
   });
 
-  BillingCycle get billingCycleEnum =>
-      BillingCycle.values.firstWhere((e) => e.name == billingCycle, orElse: () => BillingCycle.monthly);
+  BillingCycle get billingCycleEnum => BillingCycle.values.firstWhere(
+    (e) => e.name == billingCycle,
+    orElse: () => BillingCycle.monthly,
+  );
 
-  SubscriptionStatus get statusEnum =>
-      SubscriptionStatus.values.firstWhere((e) => e.name == status, orElse: () => SubscriptionStatus.active);
+  SubscriptionStatus get statusEnum => SubscriptionStatus.values.firstWhere(
+    (e) => e.name == status,
+    orElse: () => SubscriptionStatus.active,
+  );
 
   Category get categoryEnum => Category.fromString(category);
 

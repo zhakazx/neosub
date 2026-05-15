@@ -4,24 +4,25 @@ import '../repositories/subscription_repository.dart';
 import '../services/notification_service.dart';
 import 'settings_provider.dart';
 
-final subscriptionRepositoryProvider = Provider((ref) => SubscriptionRepository());
+final subscriptionRepositoryProvider = Provider(
+  (ref) => SubscriptionRepository(),
+);
 
 final subscriptionsProvider =
     StateNotifierProvider<SubscriptionNotifier, List<Subscription>>((ref) {
-  return SubscriptionNotifier(
-    ref.watch(subscriptionRepositoryProvider),
-    ref.watch(notificationServiceProvider),
-    ref,
-  );
-});
+      return SubscriptionNotifier(
+        ref.watch(subscriptionRepositoryProvider),
+        ref.watch(notificationServiceProvider),
+        ref,
+      );
+    });
 
 class SubscriptionNotifier extends StateNotifier<List<Subscription>> {
   final SubscriptionRepository _repo;
   final NotificationService _notifications;
   final Ref _ref;
 
-  SubscriptionNotifier(this._repo, this._notifications, this._ref)
-      : super([]) {
+  SubscriptionNotifier(this._repo, this._notifications, this._ref) : super([]) {
     load();
   }
 
@@ -34,7 +35,10 @@ class SubscriptionNotifier extends StateNotifier<List<Subscription>> {
     await _repo.save(subscription);
     try {
       final settings = _ref.read(settingsProvider);
-      await _notifications.scheduleSubscriptionReminders(subscription, settings);
+      await _notifications.scheduleSubscriptionReminders(
+        subscription,
+        settings,
+      );
     } catch (_) {}
     load();
   }

@@ -9,6 +9,7 @@ import '../models/category.dart';
 import '../models/subscription_status.dart';
 import '../providers/subscription_provider.dart';
 import '../router/app_router.dart';
+import '../utils/brutalist_theme.dart';
 import '../utils/currency.dart';
 import '../widgets/brutalist_button.dart';
 
@@ -72,9 +73,17 @@ class _SubscriptionFormScreenState
       case BillingCycle.weekly:
         _nextBillingDate = _startDate.add(const Duration(days: 7));
       case BillingCycle.monthly:
-        _nextBillingDate = DateTime(_startDate.year, _startDate.month + 1, _startDate.day);
+        _nextBillingDate = DateTime(
+          _startDate.year,
+          _startDate.month + 1,
+          _startDate.day,
+        );
       case BillingCycle.yearly:
-        _nextBillingDate = DateTime(_startDate.year + 1, _startDate.month, _startDate.day);
+        _nextBillingDate = DateTime(
+          _startDate.year + 1,
+          _startDate.month,
+          _startDate.day,
+        );
     }
     setState(() {});
   }
@@ -99,7 +108,10 @@ class _SubscriptionFormScreenState
           ? null
           : _notesController.text.trim(),
       createdAt: widget.subscriptionId != null
-          ? ref.read(subscriptionsProvider).firstWhere((s) => s.id == widget.subscriptionId).createdAt
+          ? ref
+                .read(subscriptionsProvider)
+                .firstWhere((s) => s.id == widget.subscriptionId)
+                .createdAt
           : now,
       updatedAt: now,
     );
@@ -143,9 +155,7 @@ class _SubscriptionFormScreenState
         return Theme(
           data: Theme.of(context).copyWith(
             dialogTheme: const DialogThemeData(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
             ),
           ),
           child: child!,
@@ -170,6 +180,7 @@ class _SubscriptionFormScreenState
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.purple,
         title: Text(isEditing ? 'EDIT SUBSCRIPTION' : 'NEW SUBSCRIPTION'),
       ),
       body: Form(
@@ -177,13 +188,10 @@ class _SubscriptionFormScreenState
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            TextFormField(
+            _buildInputField(
               controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'SERVICE NAME *',
-                hintText: 'e.g. Netflix, ChatGPT Plus',
-              ),
-              textCapitalization: TextCapitalization.words,
+              label: 'SERVICE NAME *',
+              hint: 'e.g. Netflix, ChatGPT Plus',
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Service name is required';
@@ -196,14 +204,13 @@ class _SubscriptionFormScreenState
               children: [
                 Expanded(
                   flex: 2,
-                  child: TextFormField(
+                  child: _buildInputField(
                     controller: _priceController,
-                    decoration: const InputDecoration(
-                      labelText: 'PRICE *',
-                      hintText: 'e.g. 54000',
+                    label: 'PRICE *',
+                    hint: 'e.g. 54000',
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
                     ),
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'Required';
@@ -218,45 +225,26 @@ class _SubscriptionFormScreenState
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: DropdownButtonFormField<String>(
-                    key: ValueKey(_currency),
-                    initialValue: _currency,
-                    decoration: const InputDecoration(
-                      labelText: 'CURRENCY *',
-                    ),
-                    items: supportedCurrencies
-                        .map((c) => DropdownMenuItem(
-                              value: c,
-                              child: Text(c),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      if (value != null) setState(() => _currency = value);
-                    },
+                  child: _buildDropdownField<String>(
+                    value: _currency,
+                    label: 'CURRENCY *',
+                    items: supportedCurrencies,
+                    onChanged: (v) => setState(() => _currency = v),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            DropdownButtonFormField<BillingCycle>(
-              key: ValueKey(_billingCycle),
-              initialValue: _billingCycle,
-              decoration: const InputDecoration(
-                labelText: 'BILLING CYCLE *',
-              ),
-              items: BillingCycle.values
-                  .map((c) => DropdownMenuItem(
-                        value: c,
-                        child: Text(c.label),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _billingCycle = value;
-                    _updateNextBillingDate();
-                  });
-                }
+            _buildDropdownField<BillingCycle>(
+              value: _billingCycle,
+              label: 'BILLING CYCLE *',
+              items: BillingCycle.values,
+              itemLabel: (c) => c.label,
+              onChanged: (v) {
+                setState(() {
+                  _billingCycle = v;
+                  _updateNextBillingDate();
+                });
               },
             ),
             const SizedBox(height: 16),
@@ -280,49 +268,28 @@ class _SubscriptionFormScreenState
               ],
             ),
             const SizedBox(height: 16),
-            DropdownButtonFormField<Category>(
-              key: ValueKey(_category),
-              initialValue: _category,
-              decoration: const InputDecoration(
-                labelText: 'CATEGORY *',
-              ),
-              items: Category.values
-                  .map((c) => DropdownMenuItem(
-                        value: c,
-                        child: Text(c.label),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) setState(() => _category = value);
-              },
+            _buildDropdownField<Category>(
+              value: _category,
+              label: 'CATEGORY *',
+              items: Category.values,
+              itemLabel: (c) => c.label,
+              onChanged: (v) => setState(() => _category = v),
             ),
             const SizedBox(height: 16),
             if (isEditing)
-              DropdownButtonFormField<SubscriptionStatus>(
-                key: ValueKey(_status),
-                initialValue: _status,
-                decoration: const InputDecoration(
-                  labelText: 'STATUS *',
-                ),
-                items: SubscriptionStatus.values
-                    .map((s) => DropdownMenuItem(
-                          value: s,
-                          child: Text(s.label),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) setState(() => _status = value);
-                },
+              _buildDropdownField<SubscriptionStatus>(
+                value: _status,
+                label: 'STATUS *',
+                items: SubscriptionStatus.values,
+                itemLabel: (s) => s.label,
+                onChanged: (v) => setState(() => _status = v),
               ),
             if (isEditing) const SizedBox(height: 16),
-            TextFormField(
+            _buildInputField(
               controller: _notesController,
-              decoration: const InputDecoration(
-                labelText: 'NOTES',
-                hintText: 'Optional description...',
-              ),
+              label: 'NOTES',
+              hint: 'Optional description...',
               maxLines: 3,
-              textCapitalization: TextCapitalization.sentences,
             ),
             const SizedBox(height: 32),
             BrutalistButton(
@@ -332,13 +299,58 @@ class _SubscriptionFormScreenState
             const SizedBox(height: 12),
             BrutalistButton(
               label: 'CANCEL',
-              isPrimary: false,
+              variant: BrutalistButtonVariant.secondary,
               onPressed: () => context.pop(),
             ),
             const SizedBox(height: 40),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    String? hint,
+    String? Function(String?)? validator,
+    TextInputType? keyboardType,
+    int maxLines = 1,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(labelText: label, hintText: hint),
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      textCapitalization: TextCapitalization.words,
+      validator: validator,
+    );
+  }
+
+  Widget _buildDropdownField<T>({
+    required T value,
+    required String label,
+    required List<T> items,
+    String Function(T)? itemLabel,
+    required ValueChanged<T> onChanged,
+  }) {
+    return DropdownButtonFormField<T>(
+      key: ValueKey(value),
+      initialValue: value,
+      decoration: InputDecoration(labelText: label),
+      items: items
+          .map(
+            (item) => DropdownMenuItem(
+              value: item,
+              child: Text(
+                itemLabel != null ? itemLabel(item) : item.toString(),
+              ),
+            ),
+          )
+          .toList(),
+      onChanged: (v) {
+        if (v != null) onChanged(v);
+      },
     );
   }
 }

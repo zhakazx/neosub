@@ -23,7 +23,10 @@ void main() {
       );
 
       final next = sub.calculateNextBillingDate();
-      expect(next.isAfter(DateTime.now()) || next.month != DateTime.now().month - 1, true);
+      expect(
+        next.isAfter(DateTime.now()) || next.month != DateTime.now().month - 1,
+        true,
+      );
     });
 
     test('isActive returns true for active status', () {

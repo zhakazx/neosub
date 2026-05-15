@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/subscription.dart';
 import '../providers/subscription_provider.dart';
+import '../utils/brutalist_theme.dart';
 import '../utils/currency.dart';
 import '../widgets/brutalist_card.dart';
 
@@ -22,6 +23,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   Widget build(BuildContext context) {
     final subscriptions = ref.watch(subscriptionsProvider);
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final borderColor = isDark ? AppColors.white : AppColors.black;
 
     final events = <DateTime, List<Subscription>>{};
     for (final sub in subscriptions.where((s) => s.isActive)) {
@@ -35,15 +38,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
     final selectedSubs = _selectedDay != null
         ? events[DateTime(
-              _selectedDay!.year,
-              _selectedDay!.month,
-              _selectedDay!.day,
-            )] ??
-            []
+                _selectedDay!.year,
+                _selectedDay!.month,
+                _selectedDay!.day,
+              )] ??
+              []
         : [];
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.pink,
         title: const Text('CALENDAR'),
       ),
       body: Column(
@@ -51,12 +55,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           Container(
             margin: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              border: Border.all(
-                color: theme.brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
-                width: 2,
-              ),
+              color: theme.cardTheme.color,
+              border: Border.all(color: borderColor, width: 2),
+              borderRadius: BorderRadius.circular(4),
+              boxShadow: [
+                BoxShadow(offset: const Offset(3, 3), color: borderColor),
+              ],
             ),
             child: TableCalendar(
               firstDay: DateTime.utc(2020, 1, 1),
@@ -73,9 +77,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 _focusedDay = focusedDay;
               },
               calendarFormat: CalendarFormat.month,
-              availableCalendarFormats: const {
-                CalendarFormat.month: 'MONTH',
-              },
+              availableCalendarFormats: const {CalendarFormat.month: 'MONTH'},
               headerStyle: HeaderStyle(
                 titleCentered: true,
                 formatButtonVisible: false,
@@ -85,52 +87,65 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 headerPadding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(
-                      color: theme.brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black,
-                      width: 2,
-                    ),
+                    bottom: BorderSide(color: borderColor, width: 2),
                   ),
                 ),
               ),
               daysOfWeekStyle: DaysOfWeekStyle(
                 weekdayStyle: theme.textTheme.labelLarge!,
                 weekendStyle: theme.textTheme.labelLarge!.copyWith(
-                  color: theme.colorScheme.error,
+                  color: AppColors.pink,
                 ),
               ),
               calendarStyle: CalendarStyle(
                 outsideDaysVisible: false,
                 cellPadding: EdgeInsets.zero,
                 cellMargin: const EdgeInsets.all(2),
-                defaultDecoration: const BoxDecoration(),
-                weekendDecoration: const BoxDecoration(),
-                holidayDecoration: const BoxDecoration(),
-                todayDecoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
-                  border: Border.all(
-                    color: theme.colorScheme.primary,
-                    width: 2,
-                  ),
+                defaultTextStyle: TextStyle(
+                  color: isDark ? AppColors.white : AppColors.black,
+                  fontWeight: FontWeight.w600,
                 ),
-                todayTextStyle: TextStyle(
-                  color: theme.colorScheme.onPrimary,
+                defaultDecoration: const BoxDecoration(),
+                weekendTextStyle: TextStyle(
+                  color: isDark
+                      ? AppColors.white.withValues(alpha: 0.7)
+                      : AppColors.black.withValues(alpha: 0.7),
+                  fontWeight: FontWeight.w600,
+                ),
+                weekendDecoration: const BoxDecoration(),
+                holidayTextStyle: TextStyle(
+                  color: isDark ? AppColors.white : AppColors.black,
+                  fontWeight: FontWeight.w700,
+                ),
+                holidayDecoration: const BoxDecoration(),
+                disabledTextStyle: TextStyle(
+                  color: isDark ? AppColors.grey : AppColors.grey,
+                ),
+                outsideTextStyle: TextStyle(
+                  color: isDark
+                      ? AppColors.white.withValues(alpha: 0.3)
+                      : AppColors.black.withValues(alpha: 0.3),
+                ),
+                todayDecoration: BoxDecoration(
+                  color: AppColors.yellow,
+                  border: Border.all(color: borderColor, width: 2),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                todayTextStyle: const TextStyle(
+                  color: AppColors.black,
                   fontWeight: FontWeight.w900,
                 ),
                 selectedDecoration: BoxDecoration(
-                  color: theme.colorScheme.secondary,
-                  border: Border.all(
-                    color: theme.colorScheme.secondary,
-                    width: 2,
-                  ),
+                  color: AppColors.purple,
+                  border: Border.all(color: borderColor, width: 2),
+                  borderRadius: BorderRadius.circular(4),
                 ),
                 selectedTextStyle: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.white,
                   fontWeight: FontWeight.w900,
                 ),
                 markerDecoration: BoxDecoration(
-                  color: theme.colorScheme.error,
+                  color: AppColors.pink,
                   shape: BoxShape.rectangle,
                 ),
                 markerSize: 6,
@@ -151,10 +166,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           height: 6,
                           margin: const EdgeInsets.symmetric(horizontal: 1),
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.error,
-                            border: Border.all(
-                              color: theme.colorScheme.error,
-                            ),
+                            color: AppColors.pink,
+                            border: Border.all(color: borderColor),
                           ),
                         );
                       }).toList(),
@@ -176,7 +189,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           ? 'SELECT A DATE'
                           : 'NO RENEWALS ON THIS DATE',
                       style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.5,
+                        ),
                       ),
                     ),
                   )
@@ -185,27 +200,33 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     itemCount: selectedSubs.length,
                     itemBuilder: (context, index) {
                       final sub = selectedSubs[index];
+                      final catColor = AppColors.categoryColor(
+                        sub.categoryEnum,
+                      );
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: BrutalistCard(
                           onTap: () => context.push('/subscription/${sub.id}'),
+                          shadowOffset: const Offset(3, 3),
                           child: Row(
                             children: [
                               Container(
                                 width: 40,
                                 height: 40,
                                 decoration: BoxDecoration(
-                                  color: theme.colorScheme.primary,
+                                  color: catColor,
                                   border: Border.all(
-                                    color: theme.colorScheme.primary,
+                                    color: borderColor,
+                                    width: 2,
                                   ),
+                                  borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Center(
                                   child: Text(
                                     sub.name.substring(0, 1).toUpperCase(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.w900,
-                                      color: theme.colorScheme.onPrimary,
+                                      color: AppColors.white,
                                     ),
                                   ),
                                 ),
@@ -230,8 +251,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               ),
                               Text(
                                 formatCurrency(sub.price, sub.currency),
-                                style: theme.textTheme.titleLarge
-                                    ?.copyWith(fontSize: 14),
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  fontSize: 14,
+                                ),
                               ),
                             ],
                           ),

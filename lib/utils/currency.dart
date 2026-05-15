@@ -22,6 +22,8 @@ const Map<String, String> currencySymbols = {
 
 String formatCurrency(double amount, String currency) {
   final symbol = currencySymbols[currency] ?? currency;
-  final formatted = amount.toStringAsFixed(amount.truncateToDouble() == amount ? 0 : 2);
+  final formatted = amount.toStringAsFixed(
+    amount.truncateToDouble() == amount ? 0 : 2,
+  );
   return '$symbol$formatted';
 }

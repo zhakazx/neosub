@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../utils/brutalist_theme.dart';
 
 class ShellScaffold extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -8,34 +9,21 @@ class ShellScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: theme.bottomNavigationBarTheme.backgroundColor,
+        decoration: const BoxDecoration(
           border: Border(
-            top: BorderSide(
-              color: theme.brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-              width: 2,
-            ),
+            top: BorderSide(color: AppColors.greyBorder, width: 2),
           ),
         ),
         child: BottomNavigationBar(
+          backgroundColor: AppColors.black,
           currentIndex: navigationShell.currentIndex,
           onTap: (index) => navigationShell.goBranch(index),
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.list_alt),
-              label: 'Subs',
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.list_alt), label: 'Subs'),
             BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today),
               label: 'Cal',

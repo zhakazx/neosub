@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +7,7 @@ import '../models/subscription.dart';
 import '../models/subscription_status.dart';
 import '../providers/subscription_provider.dart';
 import '../router/app_router.dart';
+import '../utils/brutalist_theme.dart';
 import '../utils/currency.dart';
 import '../widgets/brutalist_card.dart';
 import '../widgets/brutalist_button.dart';
@@ -39,21 +41,29 @@ class SubscriptionDetailScreen extends ConsumerWidget {
 
     if (sub.id.isEmpty) {
       return Scaffold(
-        appBar: AppBar(title: const Text('NOT FOUND')),
+        appBar: AppBar(
+          backgroundColor: AppColors.yellow,
+          foregroundColor: AppColors.black,
+          title: const Text('NOT FOUND'),
+        ),
         body: const Center(child: Text('Subscription not found')),
       );
     }
 
     final now = DateTime.now();
     final daysRemaining = sub.nextBillingDate.difference(now).inDays;
-    final statusColor = _statusColor(sub.statusEnum);
+    final statusColor = AppColors.statusColor(sub.statusEnum);
+    final catColor = AppColors.categoryColor(sub.categoryEnum);
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.yellow,
+        foregroundColor: AppColors.black,
         title: Text(sub.name.toUpperCase()),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
+            color: AppColors.black,
             onPressed: () => context.push('/subscription/edit/${sub.id}'),
           ),
         ],
@@ -61,56 +71,77 @@ class SubscriptionDetailScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          BrutalistCard(
-            backgroundColor: theme.colorScheme.primary,
-            borderColor: theme.colorScheme.primary,
-            child: Column(
+          SizedBox(
+            height: 140,
+            child: Stack(
               children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.onPrimary,
-                    border: Border.all(
-                      color: theme.colorScheme.onPrimary,
-                      width: 2,
+                Positioned.fill(
+                  child: BrutalistCard(
+                    backgroundColor: catColor,
+                    borderColor: catColor,
+                    shadowOffset: const Offset(6, 6),
+                    shadowColor: AppColors.black.withValues(alpha: 0.3),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 72,
+                          height: 72,
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            border: Border.all(
+                              color: AppColors.black,
+                              width: 3,
+                            ),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Center(
+                            child: Text(
+                              sub.name.substring(0, 1).toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.w900,
+                                color: catColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          sub.name.toUpperCase(),
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.w800,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   ),
-                  child: Center(
+                ),
+                ..._buildStars(theme),
+                Positioned(
+                  right: 12,
+                  top: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: statusColor,
+                      border: Border.all(color: AppColors.black, width: 2),
+                      borderRadius: BorderRadius.circular(9999),
+                    ),
                     child: Text(
-                      sub.name.substring(0, 1).toUpperCase(),
+                      sub.statusEnum.label.toUpperCase(),
                       style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.w900,
-                        color: theme.colorScheme.primary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: statusColor == AppColors.yellow
+                            ? AppColors.black
+                            : AppColors.white,
                       ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  sub.name.toUpperCase(),
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor,
-                    border: Border.all(color: statusColor),
-                  ),
-                  child: Text(
-                    sub.statusEnum.label.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -118,12 +149,10 @@ class SubscriptionDetailScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 24),
-          Text(
-            'DETAILS',
-            style: theme.textTheme.headlineMedium,
-          ),
+          Text('DETAILS', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 16),
           BrutalistCard(
+            shadowOffset: const Offset(3, 3),
             child: Column(
               children: [
                 _DetailRow(
@@ -154,28 +183,22 @@ class SubscriptionDetailScreen extends ConsumerWidget {
                 _DetailRow(
                   label: 'DAYS REMAINING',
                   value: daysRemaining >= 0 ? '$daysRemaining days' : 'OVERDUE',
-                  valueColor:
-                      daysRemaining < 0 ? Colors.red : null,
+                  valueColor: daysRemaining < 0 ? AppColors.pink : null,
                 ),
                 if (sub.notes != null && sub.notes!.isNotEmpty) ...[
                   const Divider(height: 1),
-                  _DetailRow(
-                    label: 'NOTES',
-                    value: sub.notes!,
-                  ),
+                  _DetailRow(label: 'NOTES', value: sub.notes!),
                 ],
               ],
             ),
           ),
           const SizedBox(height: 24),
-          Text(
-            'ACTIONS',
-            style: theme.textTheme.headlineMedium,
-          ),
+          Text('ACTIONS', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 16),
           if (sub.statusEnum != SubscriptionStatus.active)
             BrutalistButton(
               label: 'ACTIVATE',
+              variant: BrutalistButtonVariant.success,
               onPressed: () {
                 ref
                     .read(subscriptionsProvider.notifier)
@@ -187,7 +210,7 @@ class SubscriptionDetailScreen extends ConsumerWidget {
           if (sub.statusEnum != SubscriptionStatus.paused)
             BrutalistButton(
               label: 'PAUSE',
-              isPrimary: false,
+              variant: BrutalistButtonVariant.warning,
               onPressed: () {
                 ref
                     .read(subscriptionsProvider.notifier)
@@ -199,7 +222,7 @@ class SubscriptionDetailScreen extends ConsumerWidget {
           if (sub.statusEnum != SubscriptionStatus.cancelled)
             BrutalistButton(
               label: 'CANCEL',
-              isPrimary: false,
+              variant: BrutalistButtonVariant.secondary,
               onPressed: () {
                 ref
                     .read(subscriptionsProvider.notifier)
@@ -210,14 +233,13 @@ class SubscriptionDetailScreen extends ConsumerWidget {
             const SizedBox(height: 12),
           BrutalistButton(
             label: 'EDIT SUBSCRIPTION',
-            isPrimary: false,
+            variant: BrutalistButtonVariant.success,
             onPressed: () => context.push('/subscription/edit/${sub.id}'),
           ),
           const SizedBox(height: 12),
           BrutalistButton(
             label: 'DELETE',
-            isDestructive: true,
-            isPrimary: false,
+            variant: BrutalistButtonVariant.danger,
             onPressed: () => _showDeleteDialog(context, ref, sub),
           ),
           const SizedBox(height: 40),
@@ -226,15 +248,36 @@ class SubscriptionDetailScreen extends ConsumerWidget {
     );
   }
 
-  Color _statusColor(SubscriptionStatus status) {
-    switch (status) {
-      case SubscriptionStatus.active:
-        return Colors.green;
-      case SubscriptionStatus.paused:
-        return Colors.orange;
-      case SubscriptionStatus.cancelled:
-        return Colors.red;
+  List<Widget> _buildStars(ThemeData theme) {
+    final random = Random(subscriptionId.hashCode);
+    final stars = <Widget>[];
+    final starColors = [
+      AppColors.yellow,
+      AppColors.pink,
+      AppColors.green,
+      AppColors.purple,
+    ];
+    final starIcons = [Icons.star, Icons.star_border, Icons.auto_awesome];
+
+    for (int i = 0; i < 5; i++) {
+      final top = 8.0 + random.nextDouble() * 60;
+      final right = 4.0 + random.nextDouble() * 40;
+      final color = starColors[random.nextInt(starColors.length)];
+      final icon = starIcons[random.nextInt(starIcons.length)];
+      final size = 12.0 + random.nextDouble() * 10;
+
+      stars.add(
+        Positioned(
+          top: top,
+          right: right,
+          child: Transform.rotate(
+            angle: random.nextDouble() * 0.5 - 0.25,
+            child: Icon(icon, color: color, size: size),
+          ),
+        ),
+      );
     }
+    return stars;
   }
 
   void _showDeleteDialog(
@@ -256,9 +299,7 @@ class SubscriptionDetailScreen extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () async {
-              await ref
-                  .read(subscriptionsProvider.notifier)
-                  .delete(sub.id);
+              await ref.read(subscriptionsProvider.notifier).delete(sub.id);
               if (context.mounted) {
                 context.pop();
                 context.pop();
@@ -277,7 +318,7 @@ class SubscriptionDetailScreen extends ConsumerWidget {
             },
             child: const Text(
               'DELETE',
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(color: AppColors.pink),
             ),
           ),
         ],
@@ -291,11 +332,7 @@ class _DetailRow extends StatelessWidget {
   final String value;
   final Color? valueColor;
 
-  const _DetailRow({
-    required this.label,
-    required this.value,
-    this.valueColor,
-  });
+  const _DetailRow({required this.label, required this.value, this.valueColor});
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +346,7 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               label,
               style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),

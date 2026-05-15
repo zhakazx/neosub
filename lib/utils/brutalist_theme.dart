@@ -1,160 +1,236 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../models/category.dart';
+import '../models/subscription_status.dart';
 
 class AppColors {
-  static const Color black = Color(0xFF000000);
+  static const Color black = Color(0xFF0A0A0A);
   static const Color white = Color(0xFFFFFFFF);
   static const Color offWhite = Color(0xFFF5F5F5);
   static const Color grey = Color(0xFF888888);
-  static const Color darkGrey = Color(0xFF222222);
-  static const Color accent = Color(0xFFFF3B30);
-  static const Color accentSecondary = Color(0xFF007AFF);
-  static const Color green = Color(0xFF34C759);
-  static const Color orange = Color(0xFFFF9500);
+  static const Color darkGrey = Color(0xFF1A1A1A);
+  static const Color greyBorder = Color(0xFF333333);
+
+  static const Color purple = Color(0xFF7C3AED);
+  static const Color yellow = Color(0xFFFFD600);
+  static const Color green = Color(0xFF00C853);
+  static const Color pink = Color(0xFFFF4081);
+  static const Color orange = Color(0xFFFF6B35);
+  static const Color teal = Color(0xFF00BFA5);
+  static const Color blue = Color(0xFF2196F3);
+
+  static const Color purpleDark = Color(0xFF5B21B6);
+  static const Color greenDark = Color(0xFF00A843);
+  static const Color yellowDark = Color(0xFFE6C000);
+
+  static Color categoryColor(Category cat) {
+    switch (cat) {
+      case Category.aiTools:
+        return purple;
+      case Category.entertainment:
+        return green;
+      case Category.productivity:
+        return pink;
+      case Category.cloud:
+        return blue;
+      case Category.design:
+        return orange;
+      case Category.development:
+        return teal;
+      case Category.healthFitness:
+        return green;
+      case Category.education:
+        return yellow;
+      case Category.newsMedia:
+        return purple;
+      case Category.other:
+        return grey;
+    }
+  }
+
+  static Color statusColor(SubscriptionStatus status) {
+    switch (status) {
+      case SubscriptionStatus.active:
+        return green;
+      case SubscriptionStatus.paused:
+        return yellow;
+      case SubscriptionStatus.cancelled:
+        return pink;
+    }
+  }
 }
 
 class BrutalistTheme {
+  static TextTheme _buildTextTheme(Color textColor) {
+    return TextTheme(
+      displayLarge: GoogleFonts.spaceGrotesk(
+        fontSize: 48,
+        fontWeight: FontWeight.w900,
+        color: textColor,
+        letterSpacing: -1,
+        height: 1.1,
+      ),
+      displayMedium: GoogleFonts.spaceGrotesk(
+        fontSize: 36,
+        fontWeight: FontWeight.w900,
+        color: textColor,
+        letterSpacing: -0.5,
+        height: 1.2,
+      ),
+      headlineLarge: GoogleFonts.spaceGrotesk(
+        fontSize: 28,
+        fontWeight: FontWeight.w800,
+        color: textColor,
+        letterSpacing: -0.5,
+      ),
+      headlineMedium: GoogleFonts.spaceGrotesk(
+        fontSize: 22,
+        fontWeight: FontWeight.w800,
+        color: textColor,
+        letterSpacing: -0.3,
+      ),
+      titleLarge: GoogleFonts.spaceGrotesk(
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        color: textColor,
+      ),
+      titleMedium: GoogleFonts.dmSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+        color: textColor,
+      ),
+      bodyLarge: GoogleFonts.dmSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: textColor,
+      ),
+      bodyMedium: GoogleFonts.dmSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: textColor,
+      ),
+      bodySmall: GoogleFonts.dmSans(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: textColor,
+      ),
+      labelLarge: GoogleFonts.dmSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w700,
+        color: textColor,
+        letterSpacing: 0.5,
+      ),
+      labelSmall: GoogleFonts.dmSans(
+        fontSize: 10,
+        fontWeight: FontWeight.w800,
+        color: textColor,
+        letterSpacing: 0.5,
+      ),
+    );
+  }
+
   static ThemeData get light {
+    final textTheme = _buildTextTheme(AppColors.black);
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      scaffoldBackgroundColor: AppColors.white,
+      scaffoldBackgroundColor: AppColors.offWhite,
+      primaryColor: AppColors.purple,
       colorScheme: const ColorScheme.light(
-        primary: AppColors.black,
+        primary: AppColors.purple,
         onPrimary: AppColors.white,
-        secondary: AppColors.accent,
-        onSecondary: AppColors.white,
+        secondary: AppColors.yellow,
+        onSecondary: AppColors.black,
         surface: AppColors.white,
         onSurface: AppColors.black,
-        error: AppColors.accent,
+        error: AppColors.pink,
         onError: AppColors.white,
       ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.black,
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.purple,
         foregroundColor: AppColors.white,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: TextStyle(
+        titleTextStyle: GoogleFonts.spaceGrotesk(
           fontSize: 20,
           fontWeight: FontWeight.w900,
           color: AppColors.white,
-          letterSpacing: -0.5,
+          letterSpacing: 0.5,
         ),
       ),
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(
-          fontSize: 48,
-          fontWeight: FontWeight.w900,
-          color: AppColors.black,
-          letterSpacing: -1,
-          height: 1.1,
-        ),
-        displayMedium: TextStyle(
-          fontSize: 36,
-          fontWeight: FontWeight.w900,
-          color: AppColors.black,
-          letterSpacing: -0.5,
-          height: 1.2,
-        ),
-        headlineLarge: TextStyle(
-          fontSize: 28,
-          fontWeight: FontWeight.w800,
-          color: AppColors.black,
-          letterSpacing: -0.5,
-        ),
-        headlineMedium: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.w800,
-          color: AppColors.black,
-          letterSpacing: -0.3,
-        ),
-        titleLarge: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: AppColors.black,
-        ),
-        bodyLarge: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: AppColors.black,
-        ),
-        bodyMedium: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: AppColors.black,
-        ),
-        labelLarge: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
-          color: AppColors.black,
-        ),
-      ),
-      cardTheme: const CardThemeData(
+      textTheme: textTheme,
+      cardTheme: CardThemeData(
         color: AppColors.white,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
-          side: BorderSide(color: AppColors.black, width: 2),
+          borderRadius: BorderRadius.circular(4),
+          side: const BorderSide(color: AppColors.black, width: 2),
         ),
         margin: EdgeInsets.zero,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.offWhite,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: AppColors.black, width: 2),
+        fillColor: AppColors.white,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
         ),
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: AppColors.black, width: 2),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: AppColors.black, width: 2),
         ),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: AppColors.black, width: 3),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: AppColors.black, width: 2),
         ),
-        errorBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: AppColors.accent, width: 2),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: AppColors.black, width: 3),
         ),
-        labelStyle: const TextStyle(
-          fontSize: 14,
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: AppColors.pink, width: 2),
+        ),
+        labelStyle: GoogleFonts.dmSans(
+          fontSize: 11,
           fontWeight: FontWeight.w700,
           color: AppColors.black,
+          letterSpacing: 0.5,
         ),
-        hintStyle: TextStyle(
+        hintStyle: GoogleFonts.dmSans(
           fontSize: 14,
           fontWeight: FontWeight.w500,
-          color: AppColors.black.withValues(alpha: 0.5),
+          color: AppColors.grey,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.black,
+          backgroundColor: AppColors.purple,
           foregroundColor: AppColors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+            side: const BorderSide(color: AppColors.black, width: 3),
           ),
-          textStyle: const TextStyle(
+          textStyle: GoogleFonts.spaceGrotesk(
             fontSize: 16,
             fontWeight: FontWeight.w800,
-            letterSpacing: 0.5,
+            letterSpacing: 1.0,
           ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.black,
-          side: const BorderSide(color: AppColors.black, width: 2),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero,
-          ),
-          textStyle: const TextStyle(
+          side: const BorderSide(color: AppColors.black, width: 3),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          textStyle: GoogleFonts.spaceGrotesk(
             fontSize: 16,
             fontWeight: FontWeight.w800,
+            letterSpacing: 1.0,
           ),
         ),
       ),
@@ -162,49 +238,53 @@ class BrutalistTheme {
         style: TextButton.styleFrom(
           foregroundColor: AppColors.black,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          textStyle: const TextStyle(
+          textStyle: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w700,
           ),
         ),
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: AppColors.black,
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: AppColors.pink,
         foregroundColor: AppColors.white,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        shape: const CircleBorder(
+          side: BorderSide(color: AppColors.black, width: 3),
+        ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.white,
-        selectedItemColor: AppColors.black,
+        backgroundColor: AppColors.black,
+        selectedItemColor: AppColors.yellow,
         unselectedItemColor: AppColors.grey,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
         selectedLabelStyle: TextStyle(
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w800,
+          letterSpacing: 0.5,
         ),
         unselectedLabelStyle: TextStyle(
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: AppColors.offWhite,
+        backgroundColor: AppColors.white,
         selectedColor: AppColors.black,
-        labelStyle: const TextStyle(
-          fontSize: 13,
+        labelStyle: GoogleFonts.dmSans(
+          fontSize: 12,
           fontWeight: FontWeight.w700,
           color: AppColors.black,
         ),
-        secondaryLabelStyle: const TextStyle(
-          fontSize: 13,
+        secondaryLabelStyle: GoogleFonts.dmSans(
+          fontSize: 12,
           fontWeight: FontWeight.w700,
           color: AppColors.white,
         ),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
-          side: BorderSide(color: AppColors.black, width: 2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+          side: const BorderSide(color: AppColors.black, width: 2),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
@@ -213,10 +293,10 @@ class BrutalistTheme {
         thickness: 2,
         space: 0,
       ),
-      dialogTheme: const DialogThemeData(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-        titleTextStyle: TextStyle(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        titleTextStyle: GoogleFonts.spaceGrotesk(
           fontSize: 20,
           fontWeight: FontWeight.w900,
           color: AppColors.black,
@@ -226,66 +306,75 @@ class BrutalistTheme {
   }
 
   static ThemeData get dark {
-    return light.copyWith(
+    final textTheme = _buildTextTheme(AppColors.white);
+
+    return ThemeData(
+      useMaterial3: true,
       brightness: Brightness.dark,
       scaffoldBackgroundColor: AppColors.black,
+      primaryColor: AppColors.purple,
       colorScheme: const ColorScheme.dark(
-        primary: AppColors.white,
-        onPrimary: AppColors.black,
-        secondary: AppColors.accent,
-        onSecondary: AppColors.white,
+        primary: AppColors.purple,
+        onPrimary: AppColors.white,
+        secondary: AppColors.yellow,
+        onSecondary: AppColors.black,
         surface: AppColors.darkGrey,
         onSurface: AppColors.white,
-        error: AppColors.accent,
+        error: AppColors.pink,
         onError: AppColors.white,
       ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.white,
-        foregroundColor: AppColors.black,
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.purple,
+        foregroundColor: AppColors.white,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: TextStyle(
+        titleTextStyle: GoogleFonts.spaceGrotesk(
           fontSize: 20,
           fontWeight: FontWeight.w900,
-          color: AppColors.black,
-          letterSpacing: -0.5,
+          color: AppColors.white,
+          letterSpacing: 0.5,
         ),
       ),
-      textTheme: light.textTheme.apply(
-        bodyColor: AppColors.white,
-        displayColor: AppColors.white,
-      ),
-      cardTheme: const CardThemeData(
+      textTheme: textTheme,
+      cardTheme: CardThemeData(
         color: AppColors.darkGrey,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
-          side: BorderSide(color: AppColors.white, width: 2),
+          borderRadius: BorderRadius.circular(4),
+          side: const BorderSide(color: AppColors.white, width: 2),
         ),
         margin: EdgeInsets.zero,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.darkGrey,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: AppColors.white, width: 2),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
         ),
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: AppColors.white, width: 2),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: AppColors.white, width: 2),
         ),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: AppColors.white, width: 3),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: AppColors.white, width: 2),
         ),
-        labelStyle: const TextStyle(
-          fontSize: 14,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: AppColors.white, width: 3),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: AppColors.pink, width: 2),
+        ),
+        labelStyle: GoogleFonts.dmSans(
+          fontSize: 11,
           fontWeight: FontWeight.w700,
           color: AppColors.white,
+          letterSpacing: 0.5,
         ),
-        hintStyle: const TextStyle(
+        hintStyle: GoogleFonts.dmSans(
           fontSize: 14,
           fontWeight: FontWeight.w500,
           color: AppColors.grey,
@@ -293,31 +382,31 @@ class BrutalistTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.white,
-          foregroundColor: AppColors.black,
+          backgroundColor: AppColors.purple,
+          foregroundColor: AppColors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+            side: const BorderSide(color: AppColors.white, width: 3),
           ),
-          textStyle: const TextStyle(
+          textStyle: GoogleFonts.spaceGrotesk(
             fontSize: 16,
             fontWeight: FontWeight.w800,
-            letterSpacing: 0.5,
+            letterSpacing: 1.0,
           ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.white,
-          side: const BorderSide(color: AppColors.white, width: 2),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero,
-          ),
-          textStyle: const TextStyle(
+          side: const BorderSide(color: AppColors.white, width: 3),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          textStyle: GoogleFonts.spaceGrotesk(
             fontSize: 16,
             fontWeight: FontWeight.w800,
+            letterSpacing: 1.0,
           ),
         ),
       ),
@@ -325,49 +414,53 @@ class BrutalistTheme {
         style: TextButton.styleFrom(
           foregroundColor: AppColors.white,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          textStyle: const TextStyle(
+          textStyle: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w700,
           ),
         ),
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: AppColors.white,
-        foregroundColor: AppColors.black,
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: AppColors.pink,
+        foregroundColor: AppColors.white,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        shape: const CircleBorder(
+          side: BorderSide(color: AppColors.white, width: 3),
+        ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.black,
-        selectedItemColor: AppColors.white,
+        selectedItemColor: AppColors.yellow,
         unselectedItemColor: AppColors.grey,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
         selectedLabelStyle: TextStyle(
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w800,
+          letterSpacing: 0.5,
         ),
         unselectedLabelStyle: TextStyle(
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
         ),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.darkGrey,
         selectedColor: AppColors.white,
-        labelStyle: const TextStyle(
-          fontSize: 13,
+        labelStyle: GoogleFonts.dmSans(
+          fontSize: 12,
           fontWeight: FontWeight.w700,
           color: AppColors.white,
         ),
-        secondaryLabelStyle: const TextStyle(
-          fontSize: 13,
+        secondaryLabelStyle: GoogleFonts.dmSans(
+          fontSize: 12,
           fontWeight: FontWeight.w700,
           color: AppColors.black,
         ),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
-          side: BorderSide(color: AppColors.white, width: 2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+          side: const BorderSide(color: AppColors.white, width: 2),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
@@ -376,10 +469,10 @@ class BrutalistTheme {
         thickness: 2,
         space: 0,
       ),
-      dialogTheme: const DialogThemeData(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.darkGrey,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-        titleTextStyle: TextStyle(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        titleTextStyle: GoogleFonts.spaceGrotesk(
           fontSize: 20,
           fontWeight: FontWeight.w900,
           color: AppColors.white,

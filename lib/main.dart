@@ -12,11 +12,7 @@ void main() async {
   await HiveService().init();
   await NotificationService().init();
 
-  runApp(
-    const ProviderScope(
-      child: SubTrackApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: SubTrackApp()));
 }
 
 class SubTrackApp extends ConsumerWidget {

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/settings_provider.dart';
 import '../providers/subscription_provider.dart';
+import '../utils/brutalist_theme.dart';
 import '../utils/currency.dart';
 import '../widgets/brutalist_card.dart';
 import '../widgets/brutalist_button.dart';
@@ -14,31 +15,31 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.green,
+        foregroundColor: AppColors.black,
         title: const Text('SETTINGS'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(
-            'PREFERENCES',
-            style: theme.textTheme.headlineMedium,
-          ),
+          Text('PREFERENCES', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 16),
           BrutalistCard(
+            shadowOffset: const Offset(3, 3),
             child: Column(
               children: [
                 _SettingsTile(
                   label: 'DARK MODE',
-                  trailing: Switch(
+                  trailing: _NeoToggle(
                     value: settings.darkMode,
                     onChanged: (value) {
                       ref.read(settingsProvider.notifier).toggleDarkMode(value);
                     },
-                    activeThumbColor: theme.colorScheme.primary,
-                    activeTrackColor: theme.colorScheme.primary.withValues(alpha: 0.3),
+                    isDark: isDark,
                   ),
                 ),
                 const Divider(height: 1),
@@ -48,13 +49,12 @@ class SettingsScreen extends ConsumerWidget {
                     value: settings.primaryCurrency,
                     underline: const SizedBox.shrink(),
                     items: supportedCurrencies
-                        .map((c) => DropdownMenuItem(
-                              value: c,
-                              child: Text(
-                                c,
-                                style: theme.textTheme.bodyLarge,
-                              ),
-                            ))
+                        .map(
+                          (c) => DropdownMenuItem(
+                            value: c,
+                            child: Text(c, style: theme.textTheme.bodyLarge),
+                          ),
+                        )
                         .toList(),
                     onChanged: (value) {
                       if (value != null) {
@@ -69,25 +69,22 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 24),
-          Text(
-            'NOTIFICATIONS',
-            style: theme.textTheme.headlineMedium,
-          ),
+          Text('NOTIFICATIONS', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 16),
           BrutalistCard(
+            shadowOffset: const Offset(3, 3),
             child: Column(
               children: [
                 _SettingsTile(
                   label: 'ENABLE REMINDERS',
-                  trailing: Switch(
+                  trailing: _NeoToggle(
                     value: settings.isEnabled,
                     onChanged: (value) {
                       ref
                           .read(settingsProvider.notifier)
                           .toggleNotifications(value);
                     },
-                    activeThumbColor: theme.colorScheme.primary,
-                    activeTrackColor: theme.colorScheme.primary.withValues(alpha: 0.3),
+                    isDark: isDark,
                   ),
                 ),
                 if (settings.isEnabled) ...[
@@ -119,8 +116,9 @@ class SettingsScreen extends ConsumerWidget {
                           spacing: 8,
                           runSpacing: 8,
                           children: [1, 3, 5, 7, 14].map((days) {
-                            final isSelected =
-                                settings.daysBefore.contains(days);
+                            final isSelected = settings.daysBefore.contains(
+                              days,
+                            );
                             return FilterChip(
                               label: Text(
                                 'D-$days',
@@ -129,16 +127,20 @@ class SettingsScreen extends ConsumerWidget {
                                       ? FontWeight.w900
                                       : FontWeight.w700,
                                   color: isSelected
-                                      ? theme.chipTheme.secondaryLabelStyle
-                                              ?.color ??
-                                          theme.colorScheme.onPrimary
+                                      ? theme
+                                                .chipTheme
+                                                .secondaryLabelStyle
+                                                ?.color ??
+                                            theme.colorScheme.onPrimary
                                       : theme.chipTheme.labelStyle?.color ??
-                                          theme.colorScheme.onSurface,
+                                            theme.colorScheme.onSurface,
                                 ),
                               ),
                               selected: isSelected,
                               onSelected: (selected) {
-                                final newDays = List<int>.from(settings.daysBefore);
+                                final newDays = List<int>.from(
+                                  settings.daysBefore,
+                                );
                                 if (selected) {
                                   newDays.add(days);
                                 } else {
@@ -160,28 +162,20 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 24),
-          Text(
-            'ABOUT',
-            style: theme.textTheme.headlineMedium,
-          ),
+          Text('ABOUT', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 16),
           BrutalistCard(
+            shadowOffset: const Offset(3, 3),
             child: Column(
               children: [
                 _SettingsTile(
                   label: 'APP VERSION',
-                  trailing: Text(
-                    '1.0.0',
-                    style: theme.textTheme.bodyLarge,
-                  ),
+                  trailing: Text('1.0.0', style: theme.textTheme.bodyLarge),
                 ),
                 const Divider(height: 1),
                 _SettingsTile(
                   label: 'DEVELOPED BY',
-                  trailing: Text(
-                    '@zhakazx',
-                    style: theme.textTheme.bodyLarge,
-                  ),
+                  trailing: Text('@zhakazx', style: theme.textTheme.bodyLarge),
                 ),
               ],
             ),
@@ -189,8 +183,7 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: 24),
           BrutalistButton(
             label: 'RESET ALL DATA',
-            isDestructive: true,
-            isPrimary: false,
+            variant: BrutalistButtonVariant.danger,
             onPressed: () => _showResetDialog(context, ref),
           ),
           const SizedBox(height: 40),
@@ -214,7 +207,7 @@ class SettingsScreen extends ConsumerWidget {
         return Theme(
           data: Theme.of(context).copyWith(
             timePickerTheme: const TimePickerThemeData(
-              dayPeriodBorderSide: BorderSide(color: Colors.black, width: 2),
+              dayPeriodBorderSide: BorderSide(color: AppColors.black, width: 2),
             ),
           ),
           child: child!,
@@ -244,12 +237,9 @@ class SettingsScreen extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () async {
-              // Clear all data
               final subs = ref.read(subscriptionsProvider);
               for (final sub in subs) {
-                await ref
-                    .read(subscriptionsProvider.notifier)
-                    .delete(sub.id);
+                await ref.read(subscriptionsProvider.notifier).delete(sub.id);
               }
               if (context.mounted) context.pop();
             },
@@ -268,10 +258,7 @@ class _SettingsTile extends StatelessWidget {
   final String label;
   final Widget trailing;
 
-  const _SettingsTile({
-    required this.label,
-    required this.trailing,
-  });
+  const _SettingsTile({required this.label, required this.trailing});
 
   @override
   Widget build(BuildContext context) {
@@ -280,14 +267,51 @@ class _SettingsTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Expanded(
-            child: Text(
-              label,
-              style: theme.textTheme.bodyLarge,
-            ),
-          ),
+          Expanded(child: Text(label, style: theme.textTheme.bodyLarge)),
           trailing,
         ],
+      ),
+    );
+  }
+}
+
+class _NeoToggle extends StatelessWidget {
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final bool isDark;
+
+  const _NeoToggle({
+    required this.value,
+    required this.onChanged,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = isDark ? AppColors.white : AppColors.black;
+    return GestureDetector(
+      onTap: () => onChanged(!value),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.linear,
+        width: 48,
+        height: 26,
+        decoration: BoxDecoration(
+          color: value ? AppColors.purple : const Color(0xFFDDDDDD),
+          border: Border.all(color: borderColor, width: 2),
+          borderRadius: BorderRadius.circular(9999),
+        ),
+        alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: 3),
+        child: Container(
+          width: 18,
+          height: 18,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            border: Border.all(color: borderColor, width: 2),
+            borderRadius: BorderRadius.circular(9999),
+          ),
+        ),
       ),
     );
   }

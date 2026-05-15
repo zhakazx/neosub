@@ -9,10 +9,8 @@ final notificationServiceProvider = Provider((ref) => NotificationService());
 
 final settingsProvider =
     StateNotifierProvider<SettingsNotifier, ReminderSettings>((ref) {
-  return SettingsNotifier(
-    ref.watch(settingsRepositoryProvider),
-  );
-});
+      return SettingsNotifier(ref.watch(settingsRepositoryProvider));
+    });
 
 class SettingsNotifier extends StateNotifier<ReminderSettings> {
   final SettingsRepository _repo;
