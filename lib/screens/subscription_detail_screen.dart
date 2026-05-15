@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../models/subscription.dart';
 import '../models/subscription_status.dart';
 import '../providers/subscription_provider.dart';
+import '../router/app_router.dart';
 import '../utils/currency.dart';
 import '../widgets/brutalist_card.dart';
 import '../widgets/brutalist_button.dart';
@@ -262,6 +263,17 @@ class SubscriptionDetailScreen extends ConsumerWidget {
                 context.pop();
                 context.pop();
               }
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                final rootContext = rootNavigatorKey.currentContext;
+                if (rootContext != null) {
+                  ScaffoldMessenger.of(rootContext).showSnackBar(
+                    const SnackBar(
+                      content: Text('SUBSCRIPTION DELETED'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
+              });
             },
             child: const Text(
               'DELETE',

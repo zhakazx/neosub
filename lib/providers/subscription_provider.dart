@@ -32,22 +32,28 @@ class SubscriptionNotifier extends StateNotifier<List<Subscription>> {
 
   Future<void> add(Subscription subscription) async {
     await _repo.save(subscription);
-    final settings = _ref.read(settingsProvider);
-    await _notifications.scheduleSubscriptionReminders(subscription, settings);
+    try {
+      final settings = _ref.read(settingsProvider);
+      await _notifications.scheduleSubscriptionReminders(subscription, settings);
+    } catch (_) {}
     load();
   }
 
   Future<void> update(Subscription subscription) async {
     final updated = subscription.copyWith(updatedAt: DateTime.now());
     await _repo.save(updated);
-    final settings = _ref.read(settingsProvider);
-    await _notifications.scheduleSubscriptionReminders(updated, settings);
+    try {
+      final settings = _ref.read(settingsProvider);
+      await _notifications.scheduleSubscriptionReminders(updated, settings);
+    } catch (_) {}
     load();
   }
 
   Future<void> delete(String id) async {
     await _repo.delete(id);
-    await _notifications.cancelSubscriptionReminders(id);
+    try {
+      await _notifications.cancelSubscriptionReminders(id);
+    } catch (_) {}
     load();
   }
 
@@ -56,12 +62,14 @@ class SubscriptionNotifier extends StateNotifier<List<Subscription>> {
     if (sub == null) return;
     final updated = sub.copyWith(status: status, updatedAt: DateTime.now());
     await _repo.save(updated);
-    final settings = _ref.read(settingsProvider);
-    if (status == 'active') {
-      await _notifications.scheduleSubscriptionReminders(updated, settings);
-    } else {
-      await _notifications.cancelSubscriptionReminders(id);
-    }
+    try {
+      final settings = _ref.read(settingsProvider);
+      if (status == 'active') {
+        await _notifications.scheduleSubscriptionReminders(updated, settings);
+      } else {
+        await _notifications.cancelSubscriptionReminders(id);
+      }
+    } catch (_) {}
     load();
   }
 

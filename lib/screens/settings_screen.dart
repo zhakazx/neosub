@@ -110,7 +110,9 @@ class SettingsScreen extends ConsumerWidget {
                       children: [
                         Text(
                           'REMIND ME BEFORE',
-                          style: theme.textTheme.labelLarge,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.onSurface,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Wrap(
@@ -120,7 +122,20 @@ class SettingsScreen extends ConsumerWidget {
                             final isSelected =
                                 settings.daysBefore.contains(days);
                             return FilterChip(
-                              label: Text('D-$days'),
+                              label: Text(
+                                'D-$days',
+                                style: TextStyle(
+                                  fontWeight: isSelected
+                                      ? FontWeight.w900
+                                      : FontWeight.w700,
+                                  color: isSelected
+                                      ? theme.chipTheme.secondaryLabelStyle
+                                              ?.color ??
+                                          theme.colorScheme.onPrimary
+                                      : theme.chipTheme.labelStyle?.color ??
+                                          theme.colorScheme.onSurface,
+                                ),
+                              ),
                               selected: isSelected,
                               onSelected: (selected) {
                                 final newDays = List<int>.from(settings.daysBefore);
@@ -162,9 +177,9 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 _SettingsTile(
-                  label: 'BUILT WITH',
+                  label: 'DEVELOPED BY',
                   trailing: Text(
-                    'FLUTTER',
+                    '@zhakazx',
                     style: theme.textTheme.bodyLarge,
                   ),
                 ),

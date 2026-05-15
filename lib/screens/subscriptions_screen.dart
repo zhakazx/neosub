@@ -286,13 +286,21 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return ChoiceChip(
-      label: Text(label),
+      label: Text(
+        label,
+        style: TextStyle(
+          fontWeight: selected ? FontWeight.w900 : FontWeight.w700,
+          color: selected
+              ? theme.chipTheme.secondaryLabelStyle?.color ??
+                  theme.colorScheme.onPrimary
+              : theme.chipTheme.labelStyle?.color ??
+                  theme.colorScheme.onSurface,
+        ),
+      ),
       selected: selected,
       onSelected: onSelected,
-      labelStyle: TextStyle(
-        fontWeight: selected ? FontWeight.w900 : FontWeight.w700,
-      ),
     );
   }
 }

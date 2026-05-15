@@ -8,6 +8,7 @@ import '../models/billing_cycle.dart';
 import '../models/category.dart';
 import '../models/subscription_status.dart';
 import '../providers/subscription_provider.dart';
+import '../router/app_router.dart';
 import '../utils/currency.dart';
 import '../widgets/brutalist_button.dart';
 
@@ -111,9 +112,25 @@ class _SubscriptionFormScreenState
 
     setState(() => _isLoading = false);
 
+    final message = widget.subscriptionId != null
+        ? 'SUBSCRIPTION UPDATED'
+        : 'SUBSCRIPTION ADDED SUCCESSFULLY';
+
     if (mounted) {
       context.pop();
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final rootContext = rootNavigatorKey.currentContext;
+      if (rootContext != null) {
+        ScaffoldMessenger.of(rootContext).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    });
   }
 
   Future<void> _pickDate(bool isStartDate) async {
