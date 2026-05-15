@@ -12,18 +12,18 @@ void main() async {
   await HiveService().init();
   await NotificationService().init();
 
-  runApp(const ProviderScope(child: SubTrackApp()));
+  runApp(const ProviderScope(child: NeosubApp()));
 }
 
-class SubTrackApp extends ConsumerWidget {
-  const SubTrackApp({super.key});
+class NeosubApp extends ConsumerWidget {
+  const NeosubApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
 
     return MaterialApp.router(
-      title: 'SubTrack',
+      title: 'Neosub',
       debugShowCheckedModeBanner: false,
       theme: BrutalistTheme.light,
       darkTheme: BrutalistTheme.dark,

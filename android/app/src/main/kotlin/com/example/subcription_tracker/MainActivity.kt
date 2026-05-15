@@ -1,4 +1,4 @@
-package com.example.subcription_tracker
+package com.example.neosub
 
 import io.flutter.embedding.android.FlutterActivity
 

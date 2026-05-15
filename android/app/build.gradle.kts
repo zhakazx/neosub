@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.subcription_tracker"
+    namespace = "com.example.neosub"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.subcription_tracker"
+        applicationId = "com.example.neosub"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
